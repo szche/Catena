@@ -41,5 +41,10 @@ def get_update():
 				mimetype='application/json')
 	return response 
 
+#TODO
+@api.route('/verify', methods=['GET'])
+def verify():
+	pass
+
 if __name__ == '__main__':
     api.run()
