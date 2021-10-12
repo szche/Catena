@@ -29,6 +29,8 @@ for utxo in utxos:
 	CatenaInputs.append( {'txid': txid, 'vout': vout} ) 
 
 CatenaOutputs.append( {'data': '5465737420545821'} )
+#TODO Calculate fee neded to add the tx within 1 block
+# bitcoin-cli estimatesmartfee 1
 CatenaOutputs.append( {CatenaAddress: total_amount} )
 
 print(CatenaInputs)
