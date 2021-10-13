@@ -1,4 +1,4 @@
-from flask import Flask, json
+from flask import Flask, json, render_template
 from os import listdir, stat
 from os.path import isfile, join
 import hashlib
@@ -41,10 +41,9 @@ def get_update():
 				mimetype='application/json')
 	return response 
 
-#TODO
-@api.route('/verify', methods=['GET'])
-def verify():
-	pass
+@api.route('/admin')
+def admin_panel():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     api.run()
