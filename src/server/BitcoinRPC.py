@@ -16,7 +16,7 @@ class BitcoinRPC(object):
 
 
 	def short_key(self, key):
-			return key[:6] + '...' +  key[-6:]
+		return key[:6] + '...' +  key[-6:]
 
 	#Creates new Catena transaction and returns signed tx
 	def new_log(self, data):
@@ -74,4 +74,4 @@ class BitcoinRPC(object):
 if __name__ == "__main__":
 	rpc = BitcoinRPC(BITCOIN_RPC_USER, BITCOIN_RPC_PASS, BITCOIN_WALLET_LABEL)
 	rpc.get_blockchain_info()
-	rpc.new_log('5369656d6b6120636f2074616d')
+	#rpc.new_log('5369656d6b6120636f2074616d')
