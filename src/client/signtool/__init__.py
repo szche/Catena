@@ -1,6 +1,4 @@
-import os
 import subprocess
-
 
 class SignTool:
     
@@ -17,19 +15,25 @@ class SignTool:
         status_pos = output.find("Status")
         status_endline = output[status_pos:].find('\n')
         data['status'] = output[status_pos:status_pos+status_endline].split(':')[1].strip()
+        #If status is invalid, return just the status field
         if data['status'] != 'Valid':
-            print('This signature is not valid!')
-            return
+            #print('This signature is not valid!')
+            return data
         # Get thumbprint of a signer pubkey
         thumbprint_pos = output.find("[Thumbprint]")
         data['thumbprint'] = output[thumbprint_pos:].split('\n')[1].strip()
-        print(data)
         return data
     
     def verify(self, filepath):
         powershell_output = self.run_powershell_cmd(filepath)
-        #print(powershell_output[1])
-        self.parse_output(powershell_output[1])
+        # if error occcured during powershell command, return error status
+        if powershell_output[0] != 0:
+            #print("Error during Get-AuthenticodeSignature!")
+            #print(powershell_output[1])
+            return {'status': 'Error durgin GetAuthenticodeSignature', 'path': filepath}
+        parsed_output = self.parse_output(powershell_output[1])
+        parsed_output['path'] = filepath
+        return parsed_output
 
 
 if __name__ == '__main__':
