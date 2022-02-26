@@ -1,8 +1,12 @@
 import subprocess
 
 class SignTool:
+    """ Class for extracting and verifying signature from signed binary. Uses Powershell's Get-AuthenticodeSignature command
+    """
     
     def run_powershell_cmd(self, filepath):
+        """ Runs Get-AuthenticodeSignature powershell commmand with given filepath 
+        Returns (returncode, output) tuple"""
         command = f'Get-AuthenticodeSignature {filepath} | Format-List -Property SignerCertificate,TimeStamperCertificate,Status,StatusMessage,Path,SignatureType,IsOSBinary'
         output = subprocess.run(["powershell", "-Command", command], capture_output=True)
         if output.returncode == 1:
@@ -10,6 +14,10 @@ class SignTool:
         return (output.returncode, output.stdout.decode('windows-1252'))
 
     def parse_output(self, output):
+        """ Parses the Powershell's command to extract signature status and signature thumpbrint.
+        Returns dictionary conatining status and thumbprint of a binary.
+        If signature is invalid, no thumbprint is returned.
+        """
         data = {}
         #Check if Status is Valid
         status_pos = output.find("Status")
@@ -25,11 +33,13 @@ class SignTool:
         return data
     
     def verify(self, filepath):
+        """ Method to interact with class, takes the filepath as an argument.
+        Method runs powershell command, parses the output and returns information
+        Returns dictionary containing status, thumbprint and filepath.
+        If signature is invalid, no thumbprint is returned """
         powershell_output = self.run_powershell_cmd(filepath)
         # if error occcured during powershell command, return error status
         if powershell_output[0] != 0:
-            #print("Error during Get-AuthenticodeSignature!")
-            #print(powershell_output[1])
             return {'status': 'Error durgin GetAuthenticodeSignature', 'path': filepath}
         parsed_output = self.parse_output(powershell_output[1])
         parsed_output['path'] = filepath
