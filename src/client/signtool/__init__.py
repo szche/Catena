@@ -33,6 +33,12 @@ class SignTool:
         data['status'] = data['status'].split(':')[1].strip()
         if data['status'] != 'Valid':
             return data
+        # Get signagure issuer
+        subject_pos = output.find("[Subject]")
+        sig_issuer = output[subject_pos+len("[Subject]"):].strip()
+        issuer = sig_issuer.split("\n")[0].strip()
+        data['issuer'] = issuer
+
         # Get thumbprint of a signer pubkey
         thumbprint_pos = output.find("[Thumbprint]")
         data['thumbprint'] = output[thumbprint_pos:].split('\n')[1].strip()
