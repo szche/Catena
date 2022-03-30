@@ -106,6 +106,3 @@ if __name__ == "__main__":
     print()
     proof = tree.get_proof('ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f')
     print(tree.verify_proof('ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', proof))
-    #tree.save_tree('data/tree.ctn')
-    #tree.load_tree('data/tree.ctn')
-    #print(tree)
