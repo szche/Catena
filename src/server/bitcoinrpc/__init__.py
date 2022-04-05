@@ -10,15 +10,14 @@ WALLET_NAME = 'Catena'
 class Bitcoin():
 
 		def __init__(self, network):
+				self.network = network
 				# Check if wallet named 'Catena' alerady exsits
 				# Connects to it if so, creates it otherwise
 				if self._check_if_exists(WALLET_NAME):
 					self.wallet = self._connect_wallet(WALLET_NAME)
 					self.wallet.balance_update_from_serviceprovider()
 				else:
-					self.wallet = self._create_wallet(WALLET_NAME, network)
-				#for key, value in self.wallet.as_dict().items():
-				#			print(key, value)
+					self.wallet = self._create_wallet(WALLET_NAME)
 
 		
 		def _check_if_exists(self, name):
@@ -28,8 +27,8 @@ class Bitcoin():
 								return True
 				return False
 		
-		def _create_wallet(self, name, network):
-			return Wallet.create(name, network=network)
+		def _create_wallet(self, name):
+			return Wallet.create(name, network=self.network)
 
 		def _connect_wallet(self, name):
 			return Wallet(name)
@@ -41,8 +40,6 @@ class Bitcoin():
 
 		@property
 		def address(self):
-			print(self.wallet.addresslist())
-			print(Address(self.wallet.addresslist()[0]))
 			return self.wallet.addresslist()[0]
 	
 
@@ -55,15 +52,12 @@ class Bitcoin():
 			# TODO smarter fee estimation
 			# Currently fee = 700 sats
 			fee = 700
-			catena_output = Output(0, script_type='nulldata', lock_script=lock_script)
-			# Something wrong with the addesss here
-			change_output = Output(value=self.balance-fee, address=Address(address))
-			#print(catena_output)
-			#print(change_output)
+			change_output = Output(value=self.balance-fee, address=address, network=self.network)
+			catena_output = Output(0, script_type='nulldata', lock_script=lock_script, network=self.network)
 			outputs = [change_output, catena_output]
 			inputs = self.wallet.select_inputs(self.balance)
 			tx = self.wallet.transaction_create(output_arr=outputs, \
-							input_arr=inputs, network=NETWORK)
+							input_arr=inputs, network=self.network)
 			tx.sign()
 			# For debugging dont send it yet
 			#tx.send()
@@ -76,5 +70,5 @@ if __name__ == "__main__":
 	btc = Bitcoin(NETWORK)
 	print(btc.balance)
 	print(btc.address)
-	#btc.new_log('9afbd907e01dae46f785a6db90cf1f9090158312f58b7cd67593c224ce17fc74')
+	btc.new_log('9afbd907e01dae46f785a6db90cf1f9090158312f58b7cd67593c224ce17fc74')
 
