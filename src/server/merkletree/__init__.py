@@ -37,12 +37,6 @@ class MerkleTree(object):
         """
         return hashlib.sha256(data.encode('utf-8')).hexdigest()
 
-    def leaves(self):
-        print("PRINTUJE DRZEWO *********************")
-        for i in self.tree:
-            print(i)
-        print("*****************************************")
-
     def _add_empty_leaves(self):
         """
         Scale up and down the tree by adding special type of leaf - EMPTY_LEAF.
@@ -212,33 +206,13 @@ class MerkleTree(object):
 if __name__ == "__main__":
     tree = MerkleTree()
     tree.add_child('a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3')
-    #tree.leaves()
     tree.add_child('5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5')
-    #tree.leaves()
     tree.add_child('ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f')
-    #print(tree)
-    #print('\n\n\n\n')
-    #tree.leaves()
-
-
     tree.add_child('asdfasdfasdfasdfasdfasdfa5d3f8c7623048c9c063d532cc95c5edasdasdad')
-    #print(tree)
-    #tree.leaves()
-
     tree.add_child('hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
-    #tree.leaves()
 
     tree.add_child('rty6bfybnuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
-    tree.leaves()
-    #tree.add_child('hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
-    #tree.leaves()
-    #tree.add_child('hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
-    #tree.leaves()
-    #tree.add_child('hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
-    #tree.leaves()
-    #print(tree.calculate_root())
-    #print(tree)
-    #print()
+    print(tree)
     proof = tree.get_proof('ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f')
     print(proof)
     print(tree.verify_proof('ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', proof))
