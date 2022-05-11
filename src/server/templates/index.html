@@ -28,7 +28,7 @@
 								<div class="col statDiv">
 									<i class="fas fa-tree statDivIcon"></i>
 									<h5>Merkle root</h5>
-									<p>a4a0...fea27</p>
+									<p>{{ merkle_root }}</p>
 								</div>
 						</div>
 
@@ -36,9 +36,9 @@
       <div class="col-md-6">
         <div class="h-100 p-5 text-white bg-dark rounded-3 latestUpdateInfo">
           <h2>Latest update file</h2>
-		  <p><i class="fas fa-file"></i> Update-1-12-2021.exe </p>
-		  <p><i class="fas fa-fingerprint"></i> ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f </p>
-		  <p><i class="fab fa-pagelines"></i> W1sncmlnaHQnLCAnZWY3OTdjODExOGYwMmRmYjY0OTYwN2RkNWQzZjhjNzYyMzA0OGM5YzA2M2Q1MzJjYzk1YzVlZDdhODk4YTY0ZiddLCBbJ2xlZnQnLCAnZmY0NWIyMTg1MDBjODVmNDMxOWEyNTIwYWIzMWM5ZjhjNWNhMTczNzhkZDc5Mjg5YmM4M2U5YTM1MDQzNTUwZCddXQ== </p>
+		  <p><i class="fas fa-file"></i> {{ latest_file[1] }}</p>
+		  <p><i class="fas fa-fingerprint"></i> {{ latest_file[6] }}</p>
+		  <p><i class="fab fa-pagelines"></i> {{ merkle_proof }} </p>
         </div>
       </div>
       <div class="col-md-6">

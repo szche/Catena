@@ -14,13 +14,13 @@ class Database:
 
     def check_db(self):
         cwd = os.path.realpath(__file__)
-        cwd = cwd[:cwd.find(sys.argv[0])]
+        cwd = cwd[:cwd.rfind('\\')]
         db_path = f'{cwd}/{DB_FILENAME}'
         return os.path.exists(db_path)
 
     def connect(self):
         cwd = os.path.realpath(__file__)
-        cwd = cwd[:cwd.find(sys.argv[0])]
+        cwd = cwd[:cwd.rfind('\\')]
         db_path = f'{cwd}/{DB_FILENAME}'
         self.conn = sqlite3.connect(db_path, check_same_thread=False) 
         self.c = self.conn.cursor()
@@ -29,11 +29,11 @@ class Database:
         self.connect()
         self.c.execute('''
                   CREATE TABLE IF NOT EXISTS files 
-                  ([ID] INT PRIMARY KEY, [filename] TEXT, [version] TEXT, [creation_date] DATE, [added_date] DATE, [size] INT, [checksum] TEXT, [os] TEXT)
+                  ([ID] INTEGER PRIMARY KEY, [filename] TEXT, [version] TEXT, [creation_date] DATE, [added_date] DATE, [size] INT, [checksum] TEXT, [os] TEXT)
                   ''')
         self.conn.commit()
 
-    def add_new_binary(self, filename, version, creation_date, added_date, size, checksun, os):
+    def add_new_binary(self, filename, version, creation_date, added_date, size, checksum, os):
         command = 'INSERT INTO files(filename, version, creation_date, added_date, size, checksum, os) VALUES (?, ?, ?, ?, ?, ?, ?)'
         self.c.execute(command, (filename, version, creation_date, added_date, size, checksum, os))
         self.conn.commit()
@@ -57,4 +57,7 @@ class Database:
 
 if __name__ == "__main__":
     db = Database()
+    print( db.get_by_hash('96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e') )
+    #db.add_new_binary('test.exe', '1', '10-05-2022', '10-05-2022', 20, '96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e', 'WIN')
+    #db.add_new_binary('test2.exe', '1', '10-05-2022', '10-05-2022', 20, '2f97c1842eb609905556cf784640abac357270c8a5c634f231c7ee5ae8b942b1', 'WIN')
 

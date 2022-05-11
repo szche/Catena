@@ -74,7 +74,7 @@ class MerkleTree(object):
         Then we execure _add_empty_leaves() to scale the tree.
         Then we execute calculate_root() to recount the tree to potentially obtain new root
 
-        :param str child: new leaf
+        :param str child: new leaf -- hash
         """
         if EMPTY_LEAF in self.tree[0]:
             index = self.tree[0].index(EMPTY_LEAF) # first element
