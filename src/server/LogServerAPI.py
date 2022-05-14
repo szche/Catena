@@ -1,30 +1,48 @@
 from flask import Flask, json, render_template, request, send_from_directory
+from flask_httpauth import HTTPBasicAuth
 from os import listdir, stat
 from os.path import isfile, join
 
 from database import Database
 from merkletree import MerkleTree
+from bitcoinrpc import Bitcoin, NETWORK
 
 db = Database()
 merkle_tree = MerkleTree()
+btc = Bitcoin(NETWORK)
+auth = HTTPBasicAuth()
 
 # TODO store the tree in the file and dont re-calculate it on every server startup
 for filehash in [x[6] for x in db.get_all()]:
 	merkle_tree.add_child(filehash)
-print(merkle_tree)
+#print(merkle_tree)
 update_path = 'database/files/'
 
 api = Flask(__name__)
+admin_credintials = ['admin', 'password']
+
+@auth.verify_password
+def verify_password(username, password):
+	if username == admin_credintials[0] and password == admin_credintials[1]:
+		return username
+
 
 @api.route('/admin')
+@auth.login_required
 def admin_panel():
 	merkle_root = merkle_tree.get_root()
 	latest_file = db.get_all()[-1]
 	proof = merkle_tree.get_proof(latest_file[6])
 	proof_str = ""
+	wallet_balance = btc.balance_cache / 100000000
+	wallet_address = btc.address
 	for level in proof:
 		proof_str += f'{level[0]} - {level[1]}\n'
-	return render_template('index.html', merkle_root=merkle_root, latest_file=latest_file, merkle_proof=proof_str)
+	return render_template('index.html', merkle_root=merkle_root, \
+			latest_file=latest_file, \
+			merkle_proof=proof_str, \
+			balance=wallet_balance, \
+			address=wallet_address)
 
 @api.route('/all', methods=['GET'])
 def get_all():

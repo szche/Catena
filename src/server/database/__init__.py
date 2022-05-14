@@ -13,15 +13,13 @@ class Database:
             self.connect()
 
     def check_db(self):
-        cwd = os.path.realpath(__file__)
-        cwd = cwd[:cwd.rfind('\\')]
-        db_path = f'{cwd}/{DB_FILENAME}'
+        cwd = os.getcwd() 
+        db_path = f'{cwd}/database/{DB_FILENAME}'
         return os.path.exists(db_path)
 
     def connect(self):
-        cwd = os.path.realpath(__file__)
-        cwd = cwd[:cwd.rfind('\\')]
-        db_path = f'{cwd}/{DB_FILENAME}'
+        cwd = os.getcwd() 
+        db_path = f'{cwd}/database/{DB_FILENAME}'
         self.conn = sqlite3.connect(db_path, check_same_thread=False) 
         self.c = self.conn.cursor()
 

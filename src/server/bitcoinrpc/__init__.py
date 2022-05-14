@@ -18,6 +18,7 @@ class Bitcoin():
 					self.wallet.balance_update_from_serviceprovider()
 				else:
 					self.wallet = self._create_wallet(WALLET_NAME)
+				self.balance
 
 		
 		def _check_if_exists(self, name):
@@ -36,11 +37,13 @@ class Bitcoin():
 		@property
 		def balance(self):
 			self.wallet.balance_update_from_serviceprovider()
-			return self.wallet.balance()
+			self.balance_cache = self.wallet.balance()
+			return self.balance_cache
 
 		@property
 		def address(self):
-			return self.wallet.addresslist()[0]
+			self.address_cache = self.wallet.addresslist()[0]
+			return self.address_cache
 	
 
 		def new_log(self, hashed_data):
@@ -70,5 +73,5 @@ if __name__ == "__main__":
 	btc = Bitcoin(NETWORK)
 	print(btc.balance)
 	print(btc.address)
-	btc.new_log('9afbd907e01dae46f785a6db90cf1f9090158312f58b7cd67593c224ce17fc74')
+	#btc.new_log('9afbd907e01dae46f785a6db90cf1f9090158312f58b7cd67593c224ce17fc74')
 
