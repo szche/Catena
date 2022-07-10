@@ -2,7 +2,7 @@ from bitcoinlib.wallets import Wallet
 from bitcoinlib.wallets import wallets_list
 from bitcoinlib.transactions import Output
 from bitcoinlib.keys import Address
-#from bitcoinlib.values import Value
+from bitcoinlib.scripts import Script
 
 NETWORK = 'testnet'
 WALLET_NAME = 'Catena'
@@ -63,15 +63,44 @@ class Bitcoin():
 							input_arr=inputs, network=self.network)
 			tx.sign()
 			# For debugging dont send it yet
-			#tx.send()
+			tx.send()
 			print(tx.info())
 
+		def get_latest_catena_transaction(self):
+			all_confirmed_txs = self.wallet.transactions(as_dict=True)
+			latest_tx = None
+			for tx in all_confirmed_txs[::-1]:
+				if tx['status'] != 'confirmed': continue
+				db_tx = tx['transaction']
+				db_tx_inputs = db_tx.inputs
+				if db_tx_inputs is None: continue
+				for tx_input in db_tx_inputs:
+					if tx_input.address == self.address:
+						latest_tx = tx
+						break
+			latest_tx = self.wallet.transaction( latest_tx['txid'] )
+			op_return_output = None
+			for output in latest_tx.outputs:
+				output_dict = output.as_dict()
+				if output_dict['script_type'] == 'nulldata':
+					op_return_output = output_dict
+					break
 
+			op_return_script = op_return_output['script']
+			
+			op_return_data = Script.parse(op_return_script).serialize_list()[-1].hex()
 
+			return_data = {
+				'txid': latest_tx.txid,
+				'op_return_hash': op_return_data
+			}
+			return return_data
 
 if __name__ == "__main__":
 	btc = Bitcoin(NETWORK)
-	print(btc.balance)
+	#print(btc.wallet.info(detail=5))
+	print(btc.get_latest_catena_transaction())
+	#print(btc.balance)
 	print(btc.address)
-	#btc.new_log('9afbd907e01dae46f785a6db90cf1f9090158312f58b7cd67593c224ce17fc74')
+	#btc.new_log('08378b4527c8152aaefa8e251c2513ce8741c710229e79ae14a804b7a590da37')
 
