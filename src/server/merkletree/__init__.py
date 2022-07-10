@@ -3,8 +3,8 @@ import copy
 import math
 import pickle
 import typing
+import os
 from typing import List
-
 
 EMPTY_LEAF = "EMPTY"
 
@@ -184,6 +184,8 @@ class MerkleTree(object):
 
         :param str path: path to a file
         """
+        cwd = os.getcwd()
+        path = f'{cwd}/merkletree/tree_archive/{path}'
         with open(path, "wb+") as f:
             f.write( pickle.dumps(self.tree, protocol=4) )
 
@@ -211,8 +213,11 @@ if __name__ == "__main__":
     tree.add_child('asdfasdfasdfasdfasdfasdfa5d3f8c7623048c9c063d532cc95c5edasdasdad')
     tree.add_child('hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
 
+    tree.save_tree(tree.get_root())
+    """
     tree.add_child('rty6bfybnuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
     print(tree)
     proof = tree.get_proof('ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f')
     print(proof)
     print(tree.verify_proof('ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', proof))
+    """
