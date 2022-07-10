@@ -13,6 +13,7 @@ btc = Bitcoin(NETWORK)
 auth = HTTPBasicAuth()
 
 # TODO store the tree in the file and dont re-calculate it on every server startup
+latest_catena = btc.get_latest_catena_transaction()
 for filehash in [x[6] for x in db.get_all()]:
 	merkle_tree.add_child(filehash)
 #print(merkle_tree)
@@ -43,6 +44,25 @@ def admin_panel():
 			merkle_proof=proof_str, \
 			balance=wallet_balance, \
 			address=wallet_address)
+
+
+@api.route('/push-new-root')
+@auth.login_required
+def push_new_root():
+	all_db_files = db.get_all()
+	# Craft a new local merkle tree with all the files in database and publish the digest to the Bitcoin network
+	local_tree = MerkleTree()
+	for fileinfo in all_db_files:
+		local_tree.add_child(fileinfo[6])
+	print("New merkle root: ", local_tree.get_root())
+	# Save the tree
+	local_tree.save_tree( local_tree.get_root() )
+	# Publish new root to the network
+	print(btc.new_log( local_tree.get_root() ))
+	return 'Ok', 200
+
+
+
 
 @api.route('/all', methods=['GET'])
 def get_all():
@@ -88,4 +108,4 @@ def verify_file():
 """
 
 if __name__ == '__main__':
-    api.run()
+    api.run(debug=True)
