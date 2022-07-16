@@ -13,9 +13,12 @@ btc = Bitcoin(NETWORK)
 auth = HTTPBasicAuth()
 
 # TODO store the tree in the file and dont re-calculate it on every server startup
+# Find the latest catena hash commit and load the merkle-tree file
 latest_catena = btc.get_latest_catena_transaction()
-for filehash in [x[6] for x in db.get_all()]:
-	merkle_tree.add_child(filehash)
+print(latest_catena['op_return_hash'])
+merkle_tree.load_tree( latest_catena['op_return_hash'] )
+#for filehash in [x[6] for x in db.get_all()]:
+#	merkle_tree.add_child(filehash)
 #print(merkle_tree)
 update_path = 'database/files/'
 

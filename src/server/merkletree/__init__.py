@@ -195,6 +195,8 @@ class MerkleTree(object):
 
         :param str path: a path to a file
         """
+        cwd = os.getcwd()
+        path = f'{cwd}/merkletree/tree_archive/{path}'
         with open(path, "rb") as f:
             data = f.read()
             self.tree = pickle.loads(data)

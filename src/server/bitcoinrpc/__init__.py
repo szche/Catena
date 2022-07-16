@@ -67,6 +67,7 @@ class Bitcoin():
 			print(tx.info())
 
 		def get_latest_catena_transaction(self):
+			self.wallet.transactions_update()
 			all_confirmed_txs = self.wallet.transactions(as_dict=True)
 			latest_tx = None
 			for tx in all_confirmed_txs[::-1]:
