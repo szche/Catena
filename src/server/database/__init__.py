@@ -1,8 +1,15 @@
 import sqlite3
 import os
 import sys
+import hashlib
 
 DB_FILENAME = "db.db"
+
+def calculate_file_hash(path):
+    with open(path,"rb") as f:
+        bytes = f.read() # read entire file as bytes
+        readable_hash = hashlib.sha256(bytes).hexdigest();
+        return readable_hash
 
 class Database:
     def __init__(self):
