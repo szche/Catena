@@ -200,8 +200,6 @@ class MerkleTree(object):
         with open(path, "rb") as f:
             data = f.read()
             self.tree = pickle.loads(data)
-        print("Loaded tree")
-        print(self.tree)
 
     def clear_tree(self):
         """ 

@@ -3,6 +3,7 @@ import subprocess
 class SignTool():
 		def _run_command(self, cmd):
 				c = subprocess.run(cmd, capture_output=True, shell=True)
+				#print(c)
 				# Return code 0 is success 
 				if c.returncode == 0 and "No signature found" not in c.stdout.decode():
 					#print(c.stdout.decode())
