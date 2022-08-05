@@ -15,7 +15,7 @@ auth = HTTPBasicAuth()
 # TODO store the tree in the file and dont re-calculate it on every server startup
 # Find the latest catena hash commit and load the merkle-tree file
 latest_catena = btc.get_latest_catena_transaction()
-print(latest_catena['op_return_hash'])
+print("Look for file: ", latest_catena['op_return_hash'])
 merkle_tree.load_tree( latest_catena['op_return_hash'] )
 #for filehash in [x[6] for x in db.get_all()]:
 #	merkle_tree.add_child(filehash)
@@ -79,9 +79,11 @@ def get_all():
 @api.route('/download', methods=['GET'])
 def get_file_by_hash():
 	file_hash = request.args.get("file")
+	print("User looking to download file with hash: ", file_hash)
 	database_search = db.get_by_hash(file_hash)
+	print(database_search)
 	# Send empty response if no file found
-	if database_search == []:
+	if len(database_search) == 0:
 		return 'Not found', 404
 	else:
 		file_info = database_search[0]
