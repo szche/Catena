@@ -19,6 +19,7 @@ class Bitcoin():
 				else:
 					self.wallet = self._create_wallet(WALLET_NAME)
 				self.balance
+				self.cached_address = self.address
 
 		
 		def _check_if_exists(self, name):
@@ -69,6 +70,9 @@ class Bitcoin():
 		def get_latest_catena_transaction(self):
 			self.wallet.transactions_update()
 			all_confirmed_txs = self.wallet.transactions(as_dict=True)
+			if len(all_confirmed_txs) == 0:
+				print("No transactions found")
+				return False
 			latest_tx = None
 			for tx in all_confirmed_txs[::-1]:
 				if tx['status'] != 'confirmed': continue
@@ -76,9 +80,13 @@ class Bitcoin():
 				db_tx_inputs = db_tx.inputs
 				if db_tx_inputs is None: continue
 				for tx_input in db_tx_inputs:
-					if tx_input.address == self.address:
+					if tx_input.address == self.cached_address:
 						latest_tx = tx
 						break
+				if latest_tx != None: break
+			if latest_tx == None:
+				print("No catena TX found")
+				return False
 			latest_tx = self.wallet.transaction( latest_tx['txid'] )
 			op_return_output = None
 			for output in latest_tx.outputs:
