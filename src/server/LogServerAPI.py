@@ -1,11 +1,16 @@
 from flask import Flask, json, render_template, request, send_from_directory
 from flask_httpauth import HTTPBasicAuth
-from os import listdir, stat
-from os.path import isfile, join
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
 
-from database import Database
+import os.path
+
+from database import Database, calculate_file_hash
 from merkletree import MerkleTree
 from bitcoinrpc import Bitcoin, NETWORK
+from signtool import SignTool
+
+
 
 db = Database()
 merkle_tree = MerkleTree()
@@ -15,14 +20,17 @@ auth = HTTPBasicAuth()
 # TODO store the tree in the file and dont re-calculate it on every server startup
 # Find the latest catena hash commit and load the merkle-tree file
 latest_catena = btc.get_latest_catena_transaction()
-print("Look for file: ", latest_catena['op_return_hash'])
 merkle_tree.load_tree( latest_catena['op_return_hash'] )
 #for filehash in [x[6] for x in db.get_all()]:
 #	merkle_tree.add_child(filehash)
 #print(merkle_tree)
 update_path = 'database/files/'
+upload_path = 'uploads/'
 
 api = Flask(__name__)
+api.config['UPLOAD_FOLDER'] = upload_path
+
+
 admin_credintials = ['admin', 'password']
 
 @auth.verify_password
@@ -48,10 +56,25 @@ def admin_panel():
 			balance=wallet_balance, \
 			address=wallet_address)
 
-
-@api.route('/push-new-root')
+@api.route('/uploader', methods = ['POST'])
 @auth.login_required
-def push_new_root():
+def upload_file():
+	f = request.files['file']
+	path_to_upload = os.path.join(api.config['UPLOAD_FOLDER'], secure_filename(f.filename))
+	path_to_store_signed = os.path.join(update_path, secure_filename(f.filename))
+	f.save(path_to_upload)
+	# Sign the file
+	signer = SignTool()
+	signing = signer.sign('/home/sh/Desktop/Catena/selfsigned.crt','/home/sh/Desktop/Catena/selfsigned.key','123', \
+						'https://google.pl', path_to_upload, path_to_store_signed)
+	if signing == False:
+		return "Erorr signing file"
+	
+	# Add to the database
+	file_hash = calculate_file_hash(path_to_store_signed)
+	db.add_new_binary(secure_filename(f.filename), '1', '10-05-2022', '10-05-2022', 20, file_hash, 'WIN')
+
+	# Create new merkle tree
 	all_db_files = db.get_all()
 	# Craft a new local merkle tree with all the files in database and publish the digest to the Bitcoin network
 	local_tree = MerkleTree()
@@ -63,8 +86,6 @@ def push_new_root():
 	# Publish new root to the network
 	print(btc.new_log( local_tree.get_root() ))
 	return 'Ok', 200
-
-
 
 
 @api.route('/all', methods=['GET'])
