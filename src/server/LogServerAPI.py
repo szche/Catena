@@ -118,14 +118,14 @@ def verify_file():
 	database_search = db.get_by_hash(file_hash)
 	# Send empty response if no file found
 	if database_search == []:
-		return 'Not found', 404
+		proof = []
 	else:
 		proof = merkle_tree.get_proof(file_hash)
-		response = api.response_class(
-				response=json.dumps( proof ),
-				status=200,
-				mimetype='application/json')
-		return response 
+	response = api.response_class(
+			response=json.dumps( proof ),
+			status=200,
+			mimetype='application/json')
+	return response 
 
 
 """
