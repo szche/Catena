@@ -1,5 +1,5 @@
 import subprocess
-
+import hashlib
 
 class SignTool:
     """ Class for extracting and verifying signature from signed binary.
@@ -42,6 +42,10 @@ class SignTool:
         # Get thumbprint of a signer pubkey
         thumbprint_pos = output.find("[Thumbprint]")
         data['thumbprint'] = output[thumbprint_pos:].split('\n')[1].strip()
+
+        # Get issuer BTC address from description - experimental way of transfer address
+        # TODO
+
         return data
 
     def verify(self, filepath):
@@ -61,6 +65,28 @@ class SignTool:
         parsed_output['path'] = filepath
         return parsed_output
 
+    def extract_btc_address(self, filepath):
+        command = f'certutil.exe -dump {filepath} | Select-String Description'
+        output = subprocess.run(["powershell", "-Command", command],
+                                capture_output=True)
+
+        if output.returncode == 1:
+            return (output.returncode, output.stderr.decode('windows-1252'))
+
+        #return (output.returncode, output.stdout.decode('windows-1252'))
+        decoded = output.stdout.decode('windows-1252')
+        decoded = decoded.replace("\n", "").replace("\r","").replace("'","").replace(")","").replace(" ","")
+        decoded = decoded[decoded.find("D"):].split(":")
+        return decoded[1]
+
+    def get_hash_of_file(self, file_path):
+        sha2 = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            bytes = f.read()
+            readable_hash = hashlib.sha256(bytes).hexdigest()
+            return readable_hash
 
 if __name__ == '__main__':
     signtool = SignTool()
+    #print(signtool.verify("D:\\VSCodeUserSetup-x64-1.55.2.exe"))
+    print(signtool.extract_btc_address(r"D:\Catena-supply\podpisana-binarka.exe"))

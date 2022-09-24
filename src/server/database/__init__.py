@@ -22,12 +22,14 @@ class Database:
     def check_db(self):
         cwd = os.getcwd() 
         db_path = f'{cwd}/database/{DB_FILENAME}'
+        #db_path = r'D:\Catena\src\server\database\db.db'
         return os.path.exists(db_path)
 
     def connect(self):
-        cwd = os.getcwd() 
+        cwd = os.getcwd()
         db_path = f'{cwd}/database/{DB_FILENAME}'
-        self.conn = sqlite3.connect(db_path, check_same_thread=False) 
+        #db_path = r'D:\Catena\src\server\database\db.db'
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.c = self.conn.cursor()
 
     def create_db(self):

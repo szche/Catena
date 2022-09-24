@@ -4,6 +4,7 @@ import math
 import pickle
 import typing
 import os
+import ast
 from typing import List
 
 EMPTY_LEAF = "EMPTY"
@@ -156,7 +157,6 @@ class MerkleTree(object):
 
         #self.verify_proof(item, proof)
         return proof
-    
     def verify_proof(self, item: str, proof: List[List[str]]) -> bool:
         """
         Verify if leaf belongs to merkle tree
@@ -165,6 +165,10 @@ class MerkleTree(object):
         :param List[List[str]]: a proof - path to the root
         :return bool: response if leaf belongs to tree
         """
+        if type(proof) == type("string"): # lekkie zabezpieczenie
+            proof = ast.literal_eval(proof)
+        print(type(proof))
+        print(proof)
         final_hash = item
         for step in proof:
             direction, hashed_data = step[0], step[1]
@@ -196,7 +200,8 @@ class MerkleTree(object):
         :param str path: a path to a file
         """
         cwd = os.getcwd()
-        path = f'{cwd}/merkletree/tree_archive/{path}'
+        path = r'D:\Catena\src\server\merkletree\tree_archive\%s' % path
+        #path = f'{cwd}/merkletree/tree_archive/{path}'
         with open(path, "rb") as f:
             data = f.read()
             self.tree = pickle.loads(data)
@@ -215,7 +220,10 @@ if __name__ == "__main__":
     tree.add_child('asdfasdfasdfasdfasdfasdfa5d3f8c7623048c9c063d532cc95c5edasdasdad')
     tree.add_child('hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
 
-    tree.save_tree(tree.get_root())
+    print(tree.get_root())
+    print(tree.get_proof('hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni'))
+    print(tree.verify_proof("hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni", "[['up', 'hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni'], ['up', 'hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni'], ['right', '6de4c2ebc51eef4be83edb4b91ef95ba395858ee398b5301339d8174ede3a9ed']]"))
+    #tree.save_tree(tree.get_root())
     """
     tree.add_child('rty6bfybnuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni')
     print(tree)
