@@ -54,6 +54,7 @@ body {
     background-color: white;
     margin-bottom: 30px;
     border-radius: 5px;
+    font-weight: bold;
 }
 
 #getCertificate {

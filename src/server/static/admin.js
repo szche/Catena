@@ -10,7 +10,12 @@ $("#submitHashVerify").click(function () {
     fetch(url)
         .then((response) => response.json())
         .then((data) => {
-            $("#verifyResut").text( JSON.stringify(data) );
+            if(JSON.stringify(data) == "[]" ) {
+                $("#verifyResut").text( "Could not find proof" );
+            }
+            else {
+                $("#verifyResut").text( btoa(JSON.stringify(data)) );
+            }
             $("#verifyResut").fadeIn();
         });
 
