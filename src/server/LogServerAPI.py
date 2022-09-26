@@ -1,3 +1,4 @@
+from ast import Add
 from flask import Flask, json, render_template, request, send_from_directory
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
@@ -9,13 +10,13 @@ from database import Database, calculate_file_hash
 from merkletree import MerkleTree
 from bitcoinrpc import Bitcoin, NETWORK
 from signtool import SignTool
-
+from address_watchdog import AddressWatchdog
 
 db = Database()
 merkle_tree = MerkleTree()
 btc = Bitcoin(NETWORK)
 auth = HTTPBasicAuth()
-
+address_watchdog = AddressWatchdog(btc.address)
 
 # TODO store the tree in the file and dont re-calculate it on every server startup
 # Find the latest catena hash commit and load the merkle-tree file
@@ -23,7 +24,8 @@ latest_catena = btc.get_latest_catena_transaction()
 if latest_catena == False:
     print("Could not find any Catena related transactions associated with the address")
 else:
-    merkle_tree.load_tree(latest_catena['op_return_hash'])
+	print("Found new merkle root!")
+	merkle_tree.load_tree(latest_catena['op_return_hash'])
 
 update_path = 'database/files/'
 upload_path = 'uploads/'
@@ -48,13 +50,6 @@ def verify_password(username, password):
 @auth.login_required
 def admin_panel():
 	proof_str = ""
-	if merkle_tree._height != 0:
-		merkle_root = merkle_tree.get_root()
-		proof = merkle_tree.get_proof(latest_file[6])
-		for level in proof:
-			proof_str += f'{level[0]} - {level[1]}\n'
-	else:
-		merkle_root = "No merkle root yet"
 	database_files = db.get_all()
 	if len(database_files) == 0:
 		latest_file = [0] * 7
@@ -62,6 +57,15 @@ def admin_panel():
 		latest_file[6] = "No file yet"
 	else:
 		latest_file = database_files[-1]
+	if merkle_tree.tree != [ [] ]:
+		merkle_root = merkle_tree.get_root()
+		proof = merkle_tree.get_proof(latest_file[6])
+		for level in proof:
+			proof_str += f'{level[0]} - {level[1]}\n'
+	else:
+		merkle_root = "No merkle root yet"
+
+
 	wallet_balance = btc.balance_cache / 100000000
 	wallet_address = btc.address
 	
@@ -72,7 +76,8 @@ def admin_panel():
 			merkle_proof=proof_str, \
 			balance=wallet_balance, \
 			address=wallet_address, \
-			cert = "\n".join(cert_str))
+			cert = "\n".join(cert_str),
+			all_files = database_files)
 
 @api.route('/uploader', methods = ['POST'])
 @auth.login_required
@@ -143,6 +148,39 @@ def verify_file():
 			status=200,
 			mimetype='application/json')
 	return response 
+
+@api.route('/watch-for-update')
+@auth.login_required
+def watch_for_update():
+	message = {
+		"status": "OK",
+		"op_return": "",
+		"txid": ""
+	}
+	json_string = address_watchdog.address_txs()
+	op_returns = address_watchdog.extract_OP_RETURNs_from_txs(json_string)
+	
+	if len(op_returns) != 0:
+		op_returns = op_returns[0]
+		if merkle_tree.tree != [ [] ]:
+			merkle_root = merkle_tree.get_root()
+		else:
+			merkle_root = "None"
+		print(op_returns)
+		print(message)
+		message['op_return'] = op_returns['op_return']
+		message['txid'] = op_returns['tx']
+		if op_returns['op_return'] != merkle_root:
+			message['status'] = "ALERT"
+		else:
+			message['status'] = "OK"
+	response = api.response_class(
+			response=json.dumps( message ),
+			status=200,
+			mimetype='application/json')
+	return response 
+
+
 
 if __name__ == '__main__':
     api.run(debug=True)

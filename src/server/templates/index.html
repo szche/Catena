@@ -20,7 +20,12 @@
 <body>
 	<!-- Page content-->
 	<div class="container">
+		
 		<div class="row align-items-md-stretch" id="quickStats">
+			<div class="alert alert-danger" role="alert" id="newOpReturnAlerter">
+				A simple danger alert—check it out!
+			  </div>
+			  
 			<div class="col-md-2">
 				<i class="fas fa-cubes statDivIcon"></i>
 				<h5>Block height</h5>
@@ -34,7 +39,7 @@
 			<div class="col-md-4">
 				<i class="fab fa-bitcoin statDivIcon"></i>
 				<h5>Address</h5>
-				<p>{{ address }}</p>
+				<p id="CatenaAddress">{{ address }}</p>
 			</div>
 			<div class="col-md-4">
 				<i class="fas fa-tree statDivIcon"></i>
@@ -49,7 +54,7 @@
 		<div class="row align-items-md-stretch">
 			<div class="col-md-6">
 				<div class="h-100 p-5 text-white bg-dark rounded-3 latestUpdateInfo">
-					<h2>Latest update file</h2>
+					<h2>📦 Latest update file</h2>
 					<p><i class="fas fa-file"></i> {{ latest_file[1] }}</p>
 					<p><i class="fas fa-fingerprint"></i> {{ latest_file[6] }}</p>
 					<p><i class="fab fa-pagelines"></i> {{ merkle_proof }} </p>
@@ -57,7 +62,7 @@
 			</div>
 			<div class="col-md-6" id="submitNewFileForm">
 				<div class="h-100 p-5 bg-light border rounded-3">
-					<h2>Submit new file</h2>
+					<h2>📥 Upload new file</h2>
 					<p>Uploaded file will be signed, appended to the merkle tree and committed to the Bitcoin
 						blockchain.</p>
 					<form action="/uploader" method="POST" enctype="multipart/form-data">
@@ -68,7 +73,7 @@
 			</div>
 			<div class="col-md-12" id="getVerification">
 				<div class="h-100 p-5 bg-light border rounded-3">
-					<h2>Verify file</h2>
+					<h2>✅ Verify file</h2>
 					<p>Get Merkle proof for provided file hash</p>
 					<div id="verifyResut">
 					</div>
@@ -76,7 +81,7 @@
 						<div class="input-group input-group-lg">
 							<span class="input-group-text" id="inputGroup-sizing-lg">Filehash</span>
 							<input type="text" class="form-control" aria-label="Sizing example input"
-								aria-describedby="inputGroup-sizing-lg" placeholder="8875...953b" id="verifyHashInput">
+								aria-describedby="inputGroup-sizing-lg" placeholder="124bfb6284d82f3b1105f88e3e7a0ee02d0e525193413c05b75041917022cd6e" id="verifyHashInput">
 						</div>
 						<button class="btn btn-dark" id="submitHashVerify">Verify</button>
 
@@ -85,9 +90,34 @@
 			</div>
 			<div class="col-md-6" id="getCertificate">
 				<div class="h-100 p-5 text-white bg-dark rounded-3">
-					<h2>Company Certificate</h2>
+					<h2>🔏 Company Certificate</h2>
 					<p>Certificate used to sign all binaries uploaded in this system</p>
 					<pre id="certificateBlock">{{ cert }}</pre>
+				</div>
+			</div>
+			<div class="col-md-6" id="allFiles">
+				<div class="h-100 p-5 bg-light border rounded-3">
+					<h2>🗂 Files in database</h2>
+					<p>Download any of these by clicking on the filename</p>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">#</th>
+							<th scope="col">Filename</th>
+							<th scope="col">Checksum</th>
+						  </tr>
+						</thead>
+						<tbody>
+						{% for file in all_files %}
+						<tr>
+							<th scope="row">{{ file[0] }}</th>
+							<td><a href="/download?file={{ file[6] }}">{{ file[1] }}</a></td>
+							<td>{{ file[6][:12] }}...{{ file[6][-12:] }}</td>
+						</tr>
+						{% endfor %}
+						</tbody>
+					  </table>
+
 				</div>
 			</div>
 		</div>

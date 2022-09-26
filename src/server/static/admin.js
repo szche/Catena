@@ -1,4 +1,6 @@
 
+let blockstream_url = 'https://blockstream.info/testnet/'
+
 $("#submitHashVerify").click(function () {
     let hash = document.getElementById("verifyHashInput").value;
     //Skip if length of provided hash is not correct
@@ -14,3 +16,20 @@ $("#submitHashVerify").click(function () {
 
 
 });
+
+setInterval(watchForRootChange, 1000);
+
+function watchForRootChange() {
+    let address = document.getElementById("CatenaAddress").innerText;
+    fetch('/watch-for-update')
+    .then((response) => response.json())
+    .then((data) => {
+        if(data['status'] == "ALERT") {
+            let tx_url = blockstream_url+data['txid']
+            let message = `⚠️ Change in merkle root detected!<br>OP_RETURN: ${data['op_return']}<br>Txid: <a href="${tx_url}" target="_blank">${data['txid']}</a>`
+            document.getElementById("newOpReturnAlerter").innerHTML = message;
+        }
+        $("#newOpReturnAlerter").fadeIn();
+
+    });
+}

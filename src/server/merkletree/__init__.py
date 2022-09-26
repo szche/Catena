@@ -200,8 +200,8 @@ class MerkleTree(object):
         :param str path: a path to a file
         """
         cwd = os.getcwd()
-        path = r'D:\Catena\src\server\merkletree\tree_archive\%s' % path
-        #path = f'{cwd}/merkletree/tree_archive/{path}'
+        #path = r'D:\Catena\src\server\merkletree\tree_archive\%s' % path
+        path = f'{cwd}/merkletree/tree_archive/{path}'
         with open(path, "rb") as f:
             data = f.read()
             self.tree = pickle.loads(data)

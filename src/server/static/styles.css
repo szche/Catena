@@ -46,3 +46,15 @@ body {
 #getCertificate {
     margin-top: 20px;
 }
+
+#newOpReturnAlerter {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.4em;
+    margin-bottom: 30px;
+    display: none;
+}
+
+#allFiles {
+    margin-top: 20px;
+}
