@@ -5,4 +5,5 @@ env
 *.key
 *.crt
 *.un~
+*.db
 src/server/merkletree/tree_archive/*
