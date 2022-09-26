@@ -61,7 +61,7 @@ def admin_panel():
 		latest_file[1] = "No file yet"
 		latest_file[6] = "No file yet"
 	else:
-		latest_file = database_files()[-1]
+		latest_file = database_files[-1]
 	wallet_balance = btc.balance_cache / 100000000
 	wallet_address = btc.address
 	
@@ -82,7 +82,7 @@ def upload_file():
 	path_to_store_signed = os.path.join(update_path, secure_filename(f.filename))
 	f.save(path_to_upload)
 	# Sign the file
-	signer = SignTool()
+	signer = SignTool(signtool_path)
 	signing = signer.sign(signtool_path, btc.address, 'https://agh.edu.pl', path_to_upload, path_to_store_signed)
 	if signing == False:
 		return "Erorr signing file"

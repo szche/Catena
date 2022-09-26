@@ -25,8 +25,8 @@ class SignTool():
 
 		def sign(self, path, description, url, filepath, filepath_signed):
 				# Needs to be executed with sudo to be working correctly
-				command = f'osslsigncode sign -h sha2 -certs {path}/keys/cert.crt ' + \
-							f'-key {path}/keys/private.key -n {description} -i {url} ' + \
+				command = f'osslsigncode sign -h sha2 -certs {path}keys/cert.crt ' + \
+							f'-key {path}keys/private.key -n {description} -i {url} ' + \
 							f'-in {filepath} -out {filepath_signed}'
 				#print('Final command: ', command)
 				return self._run_command(command)
