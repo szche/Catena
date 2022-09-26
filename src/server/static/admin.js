@@ -28,8 +28,7 @@ function watchForRootChange() {
             let tx_url = blockstream_url+data['txid']
             let message = `⚠️ Change in merkle root detected!<br>OP_RETURN: ${data['op_return']}<br>Txid: <a href="${tx_url}" target="_blank">${data['txid']}</a>`
             document.getElementById("newOpReturnAlerter").innerHTML = message;
+            $("#newOpReturnAlerter").fadeIn();
         }
-        $("#newOpReturnAlerter").fadeIn();
-
     });
 }

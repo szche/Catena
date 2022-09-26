@@ -19,8 +19,21 @@ body {
 
 
 .latestUpdateInfo i {
-    font-size: 2em;
     margin-right: 10px;
+}
+
+.latestUpdateInfo p {
+    word-break: break-all;
+    font-size: 1.4em;
+}
+
+.latestUpdateInfo a {
+    text-decoration: none;
+    color: white;
+}
+
+.latestUpdateInfo h2 {
+    margin-bottom: 30px;
 }
 
 #getVerification {

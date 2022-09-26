@@ -1,5 +1,5 @@
 from ast import Add
-from flask import Flask, json, render_template, request, send_from_directory
+from flask import Flask, json, render_template, request, send_from_directory, redirect
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
@@ -26,6 +26,7 @@ if latest_catena == False:
 else:
 	print("Found new merkle root!")
 	merkle_tree.load_tree(latest_catena['op_return_hash'])
+	print(latest_catena['op_return_hash'])
 
 update_path = 'database/files/'
 upload_path = 'uploads/'
@@ -49,7 +50,6 @@ def verify_password(username, password):
 @api.route('/admin')
 @auth.login_required
 def admin_panel():
-	proof_str = ""
 	database_files = db.get_all()
 	if len(database_files) == 0:
 		latest_file = [0] * 7
@@ -58,10 +58,15 @@ def admin_panel():
 	else:
 		latest_file = database_files[-1]
 	if merkle_tree.tree != [ [] ]:
+		print(merkle_tree.tree)
 		merkle_root = merkle_tree.get_root()
-		proof = merkle_tree.get_proof(latest_file[6])
-		for level in proof:
-			proof_str += f'{level[0]} - {level[1]}\n'
+		"""
+			proof = merkle_tree.get_proof(latest_file[6])
+			print(proof)
+			for level in proof:
+				proof_str += f'{level[0]} - {level[1]}\n'
+		"""
+
 	else:
 		merkle_root = "No merkle root yet"
 
@@ -73,7 +78,6 @@ def admin_panel():
 		cert_str = [line.strip() for line in f]
 	return render_template('index.html', merkle_root=merkle_root, \
 			latest_file=latest_file, \
-			merkle_proof=proof_str, \
 			balance=wallet_balance, \
 			address=wallet_address, \
 			cert = "\n".join(cert_str),
@@ -94,6 +98,7 @@ def upload_file():
 	
 	# Add to the database
 	file_hash = calculate_file_hash(path_to_store_signed)
+	print("File hash:", file_hash)
 	db.add_new_binary(secure_filename(f.filename), '1', '10-05-2022', '10-05-2022', 20, file_hash, 'WIN')
 
 	# Create new merkle tree
@@ -107,7 +112,7 @@ def upload_file():
 	local_tree.save_tree( local_tree.get_root() )
 	# Publish new root to the network
 	print(btc.new_log( local_tree.get_root() ))
-	return 'Ok', 200
+	return redirect("/admin", code=302)
 
 
 @api.route('/all', methods=['GET'])
@@ -166,8 +171,6 @@ def watch_for_update():
 			merkle_root = merkle_tree.get_root()
 		else:
 			merkle_root = "None"
-		print(op_returns)
-		print(message)
 		message['op_return'] = op_returns['op_return']
 		message['txid'] = op_returns['tx']
 		if op_returns['op_return'] != merkle_root:

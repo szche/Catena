@@ -131,7 +131,7 @@ class MerkleTree(object):
         :param str item: item to check
         :return List[List[str]]: the proof object
         """
-
+        
         if item not in self.tree[0]: return None
         
         tree = copy.deepcopy(self.tree)

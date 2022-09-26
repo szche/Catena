@@ -22,9 +22,7 @@
 	<div class="container">
 		
 		<div class="row align-items-md-stretch" id="quickStats">
-			<div class="alert alert-danger" role="alert" id="newOpReturnAlerter">
-				A simple danger alert—check it out!
-			  </div>
+			<div class="alert alert-danger" role="alert" id="newOpReturnAlerter"></div>
 			  
 			<div class="col-md-2">
 				<i class="fas fa-cubes statDivIcon"></i>
@@ -55,9 +53,8 @@
 			<div class="col-md-6">
 				<div class="h-100 p-5 text-white bg-dark rounded-3 latestUpdateInfo">
 					<h2>📦 Latest update file</h2>
-					<p><i class="fas fa-file"></i> {{ latest_file[1] }}</p>
-					<p><i class="fas fa-fingerprint"></i> {{ latest_file[6] }}</p>
-					<p><i class="fab fa-pagelines"></i> {{ merkle_proof }} </p>
+					<p><i class="fas fa-file"></i><a href="/download?file={{ latest_file[6] }}">{{ latest_file[1] }}</a></p>
+					<p><i class="fas fa-fingerprint"></i>{{ latest_file[6] }}</p>
 				</div>
 			</div>
 			<div class="col-md-6" id="submitNewFileForm">
