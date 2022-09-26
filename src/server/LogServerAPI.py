@@ -24,9 +24,8 @@ latest_catena = btc.get_latest_catena_transaction()
 if latest_catena == False:
     print("Could not find any Catena related transactions associated with the address")
 else:
-	print("Found new merkle root!")
+	print("Found new merkle root!", latest_catena['op_return_hash'])
 	merkle_tree.load_tree(latest_catena['op_return_hash'])
-	print(latest_catena['op_return_hash'])
 
 update_path = 'database/files/'
 upload_path = 'uploads/'
@@ -50,6 +49,13 @@ def verify_password(username, password):
 @api.route('/admin')
 @auth.login_required
 def admin_panel():
+	latest_catena = btc.get_latest_catena_transaction()
+	if latest_catena == False:
+		print("Could not find any Catena related transactions associated with the address")
+	else:
+		print("Found new merkle root!", latest_catena['op_return_hash'])
+		merkle_tree.load_tree(latest_catena['op_return_hash'])
+
 	database_files = db.get_all()
 	if len(database_files) == 0:
 		latest_file = [0] * 7
@@ -60,13 +66,6 @@ def admin_panel():
 	if merkle_tree.tree != [ [] ]:
 		print(merkle_tree.tree)
 		merkle_root = merkle_tree.get_root()
-		"""
-			proof = merkle_tree.get_proof(latest_file[6])
-			print(proof)
-			for level in proof:
-				proof_str += f'{level[0]} - {level[1]}\n'
-		"""
-
 	else:
 		merkle_root = "No merkle root yet"
 

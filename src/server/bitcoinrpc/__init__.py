@@ -65,7 +65,7 @@ class Bitcoin():
 			tx.sign()
 			# For debugging dont send it yet
 			tx.send()
-			print(tx.info())
+			#print(tx.info())
 
 		def get_latest_catena_transaction(self):
 			self.wallet.transactions_update()
