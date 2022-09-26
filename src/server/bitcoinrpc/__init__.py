@@ -111,5 +111,5 @@ if __name__ == "__main__":
 	print(btc.get_latest_catena_transaction())
 	#print(btc.balance)
 	print(btc.address)
-	btc.new_log('08378b4527c8152aaefa8e251c2513ce8741c710229e79ae14a804b7a590da37')
+	#btc.new_log('08378b4527c8152aaefa8e251c2513ce8741c710229e79ae14a804b7a590da37')
 

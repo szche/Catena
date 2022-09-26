@@ -66,7 +66,7 @@
 					</form>
 				</div>
 			</div>
-			<div class="col-md-6" id="getVerification">
+			<div class="col-md-12" id="getVerification">
 				<div class="h-100 p-5 bg-light border rounded-3">
 					<h2>Verify file</h2>
 					<p>Get Merkle proof for provided file hash</p>
@@ -81,6 +81,13 @@
 						<button class="btn btn-dark" id="submitHashVerify">Verify</button>
 
 					</div>
+				</div>
+			</div>
+			<div class="col-md-6" id="getCertificate">
+				<div class="h-100 p-5 text-white bg-dark rounded-3">
+					<h2>Company Certificate</h2>
+					<p>Certificate used to sign all binaries uploaded in this system</p>
+					<pre id="certificateBlock">{{ cert }}</pre>
 				</div>
 			</div>
 		</div>

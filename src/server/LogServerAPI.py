@@ -11,27 +11,32 @@ from bitcoinrpc import Bitcoin, NETWORK
 from signtool import SignTool
 
 
-
 db = Database()
 merkle_tree = MerkleTree()
 btc = Bitcoin(NETWORK)
 auth = HTTPBasicAuth()
 
+
 # TODO store the tree in the file and dont re-calculate it on every server startup
 # Find the latest catena hash commit and load the merkle-tree file
 latest_catena = btc.get_latest_catena_transaction()
-merkle_tree.load_tree( latest_catena['op_return_hash'] )
-#for filehash in [x[6] for x in db.get_all()]:
-#	merkle_tree.add_child(filehash)
-#print(merkle_tree)
+if latest_catena == False:
+    print("Could not find any Catena related transactions associated with the address")
+else:
+    merkle_tree.load_tree(latest_catena['op_return_hash'])
+
 update_path = 'database/files/'
 upload_path = 'uploads/'
+signtool_path = 'signtool/'
+signtool = SignTool(signtool_path)
+
 
 api = Flask(__name__)
 api.config['UPLOAD_FOLDER'] = upload_path
 
 
 admin_credintials = ['admin', 'password']
+
 
 @auth.verify_password
 def verify_password(username, password):
@@ -42,19 +47,32 @@ def verify_password(username, password):
 @api.route('/admin')
 @auth.login_required
 def admin_panel():
-	merkle_root = merkle_tree.get_root()
-	latest_file = db.get_all()[-1]
-	proof = merkle_tree.get_proof(latest_file[6])
 	proof_str = ""
+	if merkle_tree._height != 0:
+		merkle_root = merkle_tree.get_root()
+		proof = merkle_tree.get_proof(latest_file[6])
+		for level in proof:
+			proof_str += f'{level[0]} - {level[1]}\n'
+	else:
+		merkle_root = "No merkle root yet"
+	database_files = db.get_all()
+	if len(database_files) == 0:
+		latest_file = [0] * 7
+		latest_file[1] = "No file yet"
+		latest_file[6] = "No file yet"
+	else:
+		latest_file = database_files()[-1]
 	wallet_balance = btc.balance_cache / 100000000
 	wallet_address = btc.address
-	for level in proof:
-		proof_str += f'{level[0]} - {level[1]}\n'
+	
+	with open(f"{signtool_path}/keys/cert.crt") as f:
+		cert_str = [line.strip() for line in f]
 	return render_template('index.html', merkle_root=merkle_root, \
 			latest_file=latest_file, \
 			merkle_proof=proof_str, \
 			balance=wallet_balance, \
-			address=wallet_address)
+			address=wallet_address, \
+			cert = "\n".join(cert_str))
 
 @api.route('/uploader', methods = ['POST'])
 @auth.login_required
@@ -65,8 +83,7 @@ def upload_file():
 	f.save(path_to_upload)
 	# Sign the file
 	signer = SignTool()
-	signing = signer.sign('/home/sh/Desktop/Catena/selfsigned.crt','/home/sh/Desktop/Catena/selfsigned.key','123', \
-						'https://google.pl', path_to_upload, path_to_store_signed)
+	signing = signer.sign(signtool_path, btc.address, 'https://agh.edu.pl', path_to_upload, path_to_store_signed)
 	if signing == False:
 		return "Erorr signing file"
 	
@@ -126,12 +143,6 @@ def verify_file():
 			status=200,
 			mimetype='application/json')
 	return response 
-
-
-"""
-1) Api Admina (upload pliku na serwer, podpisywanie pliku, dodanie pliku do bazy danych, drzewa merkle, transakcji Bitcoin)
-2) w /admin przesłać do template dodatkowe informacje (stan portfela bitcoin, ile plików w bazie danych, itp.)
-"""
 
 if __name__ == '__main__':
     api.run(debug=True)

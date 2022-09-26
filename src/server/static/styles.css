@@ -42,3 +42,7 @@ body {
     margin-bottom: 30px;
     border-radius: 5px;
 }
+
+#getCertificate {
+    margin-top: 20px;
+}
