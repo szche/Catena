@@ -6,4 +6,5 @@ env
 *.crt
 *.un~
 *.db
+src/server/database/db.db
 src/server/merkletree/tree_archive/*
