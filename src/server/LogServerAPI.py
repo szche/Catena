@@ -37,7 +37,7 @@ api = Flask(__name__)
 api.config['UPLOAD_FOLDER'] = upload_path
 
 
-admin_credintials = ['admin', 'password']
+admin_credintials = ['nRjh6159zu7E1MvKs232U6Tcve2PqPSJqEzp2iUAiUy9Q', 'MQBQhhM8I1e38QzcBHcXawT7OpvLnMo3tQV']
 
 
 @auth.verify_password
