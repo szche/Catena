@@ -64,7 +64,7 @@ def admin_panel():
 	else:
 		latest_file = database_files[-1]
 	if merkle_tree.tree != [ [] ]:
-		print(merkle_tree.tree)
+		#print(merkle_tree.tree)
 		merkle_root = merkle_tree.get_root()
 	else:
 		merkle_root = "No merkle root yet"
