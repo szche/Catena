@@ -40,7 +40,7 @@ class SignTool():
 			return self._run_command(command)
 
 		def check_if_exists(self, path):
-			files = os.listdir(f"{path}/keys/")
+			files = os.listdir(f"{path}keys/")
 			if 'private.key' in files and 'cert.crt' in files:
 				return True
 			return False 
