@@ -58,7 +58,7 @@ class SignTool:
         # if error occcured during powershell command, return error status
         if powershell_output[0] != 0:
             return {
-                    'status': 'Error durgin GetAuthenticodeSignature',
+                    'status': 'Error during Get-AuthenticodeSignature',
                     'path': filepath
                     }
         parsed_output = self._parse_output(powershell_output[1])
@@ -69,7 +69,6 @@ class SignTool:
         command = f'certutil.exe -dump {filepath} | Select-String Description'
         output = subprocess.run(["powershell", "-Command", command],
                                 capture_output=True)
-
         if output.returncode == 1:
             return (output.returncode, output.stderr.decode('windows-1252'))
 
@@ -89,4 +88,5 @@ class SignTool:
 if __name__ == '__main__':
     signtool = SignTool()
     #print(signtool.verify("D:\\VSCodeUserSetup-x64-1.55.2.exe"))
-    print(signtool.extract_btc_address(r"D:\Catena-supply\podpisana-binarka.exe"))
+    print(signtool.extract_btc_address(r"D:\Catena-supply\podpisana-binarkav2.exe"))
+    print(signtool.get_hash_of_file(r"D:\Catena-supply\podpisana-binarkav2.exe"))
