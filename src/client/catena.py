@@ -46,8 +46,8 @@ class Catena(object):
 
 
 
-catena = Catena("asdasd")
-proof = catena.getProofFromServer("asdasd")
-merkle_client = MerkleClient()
-print(merkle_client.count_root("hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni", proof))
+#catena = Catena("asdasd")
+#proof = catena.getProofFromServer("asdasd")
+#merkle_client = MerkleClient()
+#rint(merkle_client.count_root("hgyuinghuingynuisdfa5d3f8c7623048c9c063d532cc95c5gynuigynuigynigni", proof))
     

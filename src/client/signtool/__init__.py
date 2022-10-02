@@ -45,7 +45,6 @@ class SignTool:
 
         # Get issuer BTC address from description - experimental way of transfer address
         # TODO
-
         return data
 
     def verify(self, filepath):
@@ -88,5 +87,8 @@ class SignTool:
 if __name__ == '__main__':
     signtool = SignTool()
     #print(signtool.verify("D:\\VSCodeUserSetup-x64-1.55.2.exe"))
-    print(signtool.extract_btc_address(r"D:\Catena-supply\podpisana-binarkav2.exe"))
-    print(signtool.get_hash_of_file(r"D:\Catena-supply\podpisana-binarkav2.exe"))
+    #print(signtool.extract_btc_address(r"D:\Catena-supply\podpisana-binarkav2.exe"))
+    #print(signtool.get_hash_of_file(r"D:\Catena-supply\podpisana-binarkav2.exe"))
+    print(signtool.verify(r"D:\Catena-supply\podpisana-binarkav2-z-serwera.exe"))
+    print(signtool.verify(r"D:\Catena-supply\podpisana-binarkav2.exe"))
+    print(signtool.verify(r"D:\Catena-supply\podpisana-podpisana-binarka-text.exe"))

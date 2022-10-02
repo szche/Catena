@@ -41,8 +41,9 @@ class CertLookup:
             self.certificates.append(c)
 
 
+
 if __name__ == "__main__":
     cert = CertLookup()
     #print(cert.find_by_thumbprint('ee869387fffd8349ab5ad14322588789a457b012'))
     print("\n\n\n\n")
-    print(cert.find_by_thumbprint('ABDCA79AF9DD48A0EA702AD45260B3C03093FB4B'))
+    print(cert.find_by_thumbprint('cabd2a79a1076a31f21d253635cb039d4329a5e8'))

@@ -93,7 +93,7 @@ def upload_file():
 	signer = SignTool(signtool_path)
 	signing = signer.sign(signtool_path, btc.address, 'https://agh.edu.pl', path_to_upload, path_to_store_signed)
 	if signing == False:
-		return "Erorr signing file"
+		return "Error signing file"
 	
 	# Add to the database
 	file_hash = calculate_file_hash(path_to_store_signed)
