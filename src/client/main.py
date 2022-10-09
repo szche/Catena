@@ -41,8 +41,9 @@ def calculator(btc_api, catena, merkle_client, signtool, cert_lookup, file_path)
     #get proof from the server
     print_handler("info", "Generuje zapytanie do serwera Cateny")
     proof = catena.getProofFromServer(file_hash)
-    if proof in [None, ""]:
+    if proof in [None, ""] or len(proof) == 0:
         print_handler("warning", "Pobrano niepoprawny proof z serwera")
+        sys.exit()
     print_handler("info", "Proof " + str(proof))
 
     # count root from file hash and proof
@@ -89,7 +90,7 @@ def print_handler(log_type, text):
     if log_type == "info":
         prefix = "[INFO]"
     elif log_type == "warning":
-        prefix = "\033[2;31;43m [WARNING] \033[0;0m"
+        prefix = "[WARNING]"
     elif log_type == "success":
         prefix = "[SUCCESS]"
     else:
