@@ -9,7 +9,7 @@ from merkle import MerkleClient
 class Catena(object):
     def __init__(self, genesis_tx):
         self.server_url = "http://localhost:5000"
-        self.server_url_public = "http://54.167.43.197:5000"
+        self.server_url_public = "http://54.147.53.2:5000"
         self.genesis_tx = genesis_tx
         self.statements = []
 
