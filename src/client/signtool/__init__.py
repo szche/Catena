@@ -16,8 +16,8 @@ class SignTool:
         output = subprocess.run(["powershell", "-Command", command],
                                 capture_output=True)
         if output.returncode == 1:
-            return (output.returncode, output.stderr.decode('windows-1252'))
-        return (output.returncode, output.stdout.decode('windows-1252'))
+            return (output.returncode, output.stderr.decode('ISO-8859-1'))
+        return (output.returncode, output.stdout.decode('ISO-8859-1'))
 
     def _parse_output(self, output):
         """ Parses the Powershell's command to extract signature status\
