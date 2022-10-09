@@ -1,0 +1,18 @@
+[req]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+C = PL 
+ST = PL
+L = Krakow 
+O = AGH 
+OU = AGH 
+CN = www.agh.edu.pl 
+[v3_req]
+keyUsage = digitalSignature
+extendedKeyUsage = serverAuth, codeSigning
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = www.agh.edu.pl
+DNS.2 = agh.edu.pl 

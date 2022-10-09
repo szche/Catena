@@ -36,7 +36,8 @@ class SignTool():
 				return self._run_command(command)
 
 		def createCertAndKey(self, path):
-			command = f'openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout {path}keys/private.key -out {path}keys/cert.crt -subj \'/CN=AGH/O=AGH/C=PL\''
+			#command = f'openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout {path}keys/private.key -out {path}keys/cert.crt -subj \'/CN=AGH/O=AGH/C=PL\''
+			command = f'openssl req -x509 -nodes -days 730 -newkey rsa:2048  -keyout {path}keys/private.key -out {path}keys/cert.crt -config /home/szch/Desktop/Catena/src/server/signtool/cert_config.cnf -sha256'
 			return self._run_command(command)
 
 		def check_if_exists(self, path):

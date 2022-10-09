@@ -13,6 +13,8 @@ mkdir merkletree/tree_archive/
 # Remove uploads
 rm -rf uploads/*
 
+rm -rf signtool/keys/*
+mkdir signtool/keys/
 
 # (Optional) remove wallet 
 clw --wallet-remove Catena
