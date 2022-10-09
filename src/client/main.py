@@ -35,10 +35,14 @@ def calculator(btc_api, catena, merkle_client, signtool, cert_lookup, file_path)
     # get hash from the file_path
     print_handler("info", "Liczę skrót z pliku")
     file_hash = signtool.get_hash_of_file(file_path)
+    if file_hash in ["", None]:
+        print_handler("warning", "Błąd przy wyliczeniu skrótu z pliku")
 
     #get proof from the server
     print_handler("info", "Generuje zapytanie do serwera Cateny")
     proof = catena.getProofFromServer(file_hash)
+    if proof in [None, ""]:
+        print_handler("warning", "Pobrano niepoprawny proof z serwera")
     print_handler("info", "Proof " + str(proof))
 
     # count root from file hash and proof
@@ -64,7 +68,8 @@ def calculator(btc_api, catena, merkle_client, signtool, cert_lookup, file_path)
     # get BTC address from cert
     print_handler("info", "Pobieram adres portfela z pliku")
     btc_address = signtool.extract_btc_address(file_path)
-
+    if btc_address in [None, ""]:
+        print_handler("warning", "Nie udało się pobrać adresu portfela z pliku")
     # get all OP_RETURNS from given address
     print_handler("info", "Pobieram OP_RETURNS z transakcji")
     op_returns = btc_api.get_OPs(btc_address)
